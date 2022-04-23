@@ -1,0 +1,34 @@
+/*
+ * Sheetleeten "coffee" theme.
+ */
+
+/*
+ * Font imports, referenced below.
+ * See https://developers.google.com/fonts/docs/getting_started.
+ */
+@import url("https://fonts.googleapis.com/css?family=Open+Sans|Fira+Mono&display=swap&subset=Latin");
+@import url("https://fonts.googleapis.com/css?family=Satisfy&display=swap&subset=Latin");
+
+:root {
+    /*
+     * Four-color palette from dark to light, or the other way around.
+     */
+    --color0: #EEE;
+    --color1: #DFD6D1;
+    --color2: #83746E;
+    --color3: #1F232C;
+
+    /* Fonts, imported above */
+    --variable-font: "Open Sans", sans-serif;
+    --fixed-font: "Fira Mono", monospace;
+    --headline-font: "Satisfy";
+
+    /* Divider style: size + dotted, dashed, solid or none */
+    --divider-style: 3px solid;
+
+    /* Heading decoration style: dotted, et.c. */
+    --heading-style: none;
+
+    /* Heading decoration style: size + dotted, dashed, solid or none */
+    --heading-decoration: 0.2ch solid;
+}

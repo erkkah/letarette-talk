@@ -1,0 +1,26 @@
+@import "sheetleeten.css";
+@import "coffee.css";
+
+:root {
+    --aspect: calc(3/2);
+    --maxwidth: calc(100vh*var(--aspect));
+    --maxheight: calc(100vw/var(--aspect));
+}
+
+footer {
+    font-size: x-small;
+}
+
+header a.headline::before {
+    content: "";
+}
+
+.center {
+    max-height: var(--maxheight);
+}
+
+#content {
+    display: flex;
+    
+    overflow: auto;
+}

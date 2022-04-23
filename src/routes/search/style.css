@@ -1,0 +1,22 @@
+button {
+	border: none;
+	background-color: inherit;
+}
+
+button:hover {
+	text-decoration: underline;
+}
+
+.textbox {
+	display: flex;
+	flex-shrink: 1;
+	flex-direction: column;
+	flex-basis: content;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.textbox span {
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
