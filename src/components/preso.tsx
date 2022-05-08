@@ -19,8 +19,10 @@ export const Centered: FC = (props) => (
 const boxedStyle: h.JSX.CSSProperties = {
     borderRadius: "12px",
     border: "2px solid var(--c3)",
-    padding: "24px",
+    padding: "1em",
     marginTop: "4px",
+    marginLeft: "1em",
+    marginRight: "1em",
     boxShadow: "6px 6px 3px var(--c2)",
 };
 

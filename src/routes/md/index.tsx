@@ -4,14 +4,14 @@ import { Boxed, Centered } from "../../components/preso";
 
 import pages from "./pages";
 
-const MD: FC<{ page: string }> = (props) => {
+const MD: FC<{ page: string; boxed: boolean }> = (props) => {
     const page = pages[props.page];
+
+    const markdowned = <Markdown>{page}</Markdown>;
 
     return (
         <Centered>
-            <Boxed>
-                <Markdown>{page}</Markdown>
-            </Boxed>
+            {props.boxed ? <Boxed>{markdowned}</Boxed> : markdowned}
         </Centered>
     );
 };

@@ -1,7 +1,4 @@
-from distutils.file_util import write_file
-from itertools import islice
 import json
-from os import write
 from sys import argv
 import markovify
 

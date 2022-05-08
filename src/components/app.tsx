@@ -45,7 +45,7 @@ const App: FC = () => {
                     headline="Letarette"
                     tagline="Innovation Bay, May 2022"
                 />
-                <div id="content">
+                <div id="content" style={{padding: "1em"}}>
                     <Router>{routes.map((route) => route)}</Router>
                 </div>
                 <footer>erik@naivecircuits.com</footer>
