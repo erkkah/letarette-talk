@@ -7,7 +7,7 @@ import {
     searchStatusCodeToString,
 } from "@letarette/client";
 import { ParsedUrlQuery } from "querystring";
-import { getIssue } from "./issuedb";
+import { getSong, getAllSongs } from "./songdb";
 
 async function main() {
     const agent = new SearchAgent(["nats://localhost:4222"]);
@@ -19,12 +19,17 @@ async function main() {
         sensitive: true,
     });
 
-    router.get("/issues/:issue", async (ctx, next) => {
+    router.get("/songs/:song", async (ctx, next) => {
         ctx.set("content-type", "application/json");
         ctx.set("access-control-allow-origin", "*");
-        const issueID = Number(ctx.params["issue"]);
-        const issue = await getIssue(issueID);
-        ctx.body = issue;
+        const songID = Number(ctx.params["song"]);
+
+        try {
+            const song = await getSong(songID);
+            ctx.body = song;
+        } catch (err) {
+            ctx.throw(`Failed to fetch song: ${err}`);
+        }
         return next();
     });
 
@@ -34,13 +39,26 @@ async function main() {
         const query = param(ctx.query, "query") ?? "";
         const pageLimit = Number(param(ctx.query, "limit") ?? 10);
         const pageOffset = Number(param(ctx.query, "offset") ?? 0);
-        const result = await agent.search(
-            query,
-            ["docs"],
-            pageLimit,
-            pageOffset
-        );
-        ctx.body = stringifySearchResponse(result);
+
+        try {
+            const result = await agent.search(
+                query,
+                ["docs"],
+                pageLimit,
+                pageOffset
+            );
+
+            const songIDList = result.Result.Hits.map((hit) => Number(hit.ID));
+            const songs = await getAllSongs(songIDList);
+
+            ctx.body = {
+                response: stringifySearchResponse(result),
+                songs
+            };
+        
+        } catch (err) {
+            ctx.throw(`Search request failed: ${err}`);
+        }
         return next();
     });
 
@@ -64,7 +82,6 @@ function stringifySearchResponse(response: SearchResponse) {
     };
 }
 
-main()
-    .catch((err) => {
-        console.log(err);
-    });
+main().catch((err) => {
+    console.log(err);
+});

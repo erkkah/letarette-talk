@@ -1,8 +1,14 @@
-import { Issue } from "../bugflow/issuedb";
+import { Song } from "../demo/songdb";
 import { SearchResponse } from "@letarette/client";
 import Axios, { AxiosInstance } from "axios";
+import { createContext } from "preact";
 
-export class IssueClient {
+export interface SongResult {
+    response: SearchResponse,
+    songs: Song[],
+}
+
+export class SongClient {
     private readonly axios: AxiosInstance;
 
     constructor(endpoint: string) {
@@ -11,17 +17,24 @@ export class IssueClient {
         });
     }
 
-    async search(query: string): Promise<SearchResponse> {
+    async search(query: string, pageLimit?: number, pageOffset?: number): Promise<SongResult> {
+        const limit = pageLimit ?? 5;
+        const offset = pageOffset ?? 0;
+
         const response = await this.axios.get("/search", {
             params: {
                 query,
+                limit,
+                offset
             },
         });
         return response.data;
     }
 
-    async get(issueID: number): Promise<Issue> {
-        const response = await this.axios.get(`/issues/${issueID}`, {});
+    async get(songID: number): Promise<Song> {
+        const response = await this.axios.get(`/songs/${songID}`, {});
         return response.data;
     }
 }
+
+export const SongClientContext = createContext<SongClient|undefined>(undefined);

@@ -9,7 +9,7 @@ const centeredRowStyle: h.JSX.CSSProperties = {
     justifyItems: "center",
     alignContent: "center",
     alignItems: "center",
-    overflow: "hidden"
+    overflow: "hidden",
 };
 
 export const Centered: FC = (props) => (
@@ -28,6 +28,10 @@ export const Boxed: FC = (props) => (
     <div style={boxedStyle}>{props.children}</div>
 );
 
+interface StyleProps {
+    style?: Partial<h.JSX.CSSProperties>;
+}
+
 const rowStyle: h.JSX.CSSProperties = {
     flexShrink: 1,
     display: "flex",
@@ -35,7 +39,9 @@ const rowStyle: h.JSX.CSSProperties = {
     alignContent: "center",
 };
 
-export const Row: FC = (props) => <div style={rowStyle}>{props.children}</div>;
+export const Row: FC<StyleProps> = (props) => (
+    <div style={{ ...rowStyle, ...props.style }}>{props.children}</div>
+);
 
 const columnStyle: h.JSX.CSSProperties = {
     flexShrink: 1,
@@ -44,6 +50,6 @@ const columnStyle: h.JSX.CSSProperties = {
     alignContent: "center",
 };
 
-export const Column: FC = (props) => (
-    <div style={columnStyle}>{props.children}</div>
+export const Column: FC<StyleProps> = (props) => (
+    <div style={{ ...columnStyle, ...props.style }}>{props.children}</div>
 );

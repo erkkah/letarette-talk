@@ -12,6 +12,6 @@ select
     text as txt,
     1 as alive
 from
-    issues
+    songs
 where
     id in (:wantedIDs)
