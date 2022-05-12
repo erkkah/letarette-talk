@@ -1,4 +1,4 @@
-import { Song } from "../demo/songdb";
+import { Song } from "../demo/songs/songdb";
 import { SearchResponse } from "@letarette/client";
 import Axios, { AxiosInstance } from "axios";
 import { createContext } from "preact";
