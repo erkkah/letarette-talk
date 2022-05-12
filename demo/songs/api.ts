@@ -10,6 +10,8 @@ import { ParsedUrlQuery } from "querystring";
 import { getSong, getAllSongs } from "./songdb";
 
 async function main() {
+    console.log("Connecting to NATS");
+
     const agent = new SearchAgent(["nats://localhost:4222"]);
     await agent.connect();
 
@@ -19,6 +21,18 @@ async function main() {
         sensitive: true,
     });
 
+    setupRoutes(router, agent);
+
+    app.use(bodyparser());
+    app.use(router.middleware());
+    
+    const port = 3000;
+    console.log(`API listening on port ${port}`);
+    app.listen(port);
+}
+
+function setupRoutes(router: KoaRouter, agent: SearchAgent) {
+    // /songs
     router.get("/songs/:song", async (ctx, next) => {
         ctx.set("content-type", "application/json");
         ctx.set("access-control-allow-origin", "*");
@@ -33,6 +47,7 @@ async function main() {
         return next();
     });
 
+    // /search
     router.get("/search", async (ctx, next) => {
         ctx.set("content-type", "application/json");
         ctx.set("access-control-allow-origin", "*");
@@ -61,10 +76,6 @@ async function main() {
         }
         return next();
     });
-
-    app.use(bodyparser());
-    app.use(router.middleware());
-    app.listen(3000);
 }
 
 function param(params: ParsedUrlQuery, key: string): string | undefined {
