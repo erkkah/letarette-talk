@@ -1,6 +1,7 @@
 import { Database, OPEN_READONLY } from "sqlite3";
 
-const db = new Database("songs.db", OPEN_READONLY);
+const db = new Database("songs.db");
+db.exec("PRAGMA journal_mode=WAL");
 
 export interface Song {
     id: number;
