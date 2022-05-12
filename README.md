@@ -1,12 +1,12 @@
 # letarette-talk
 
-Slides and demo for the Letarette talk at Innovation Bay May 2022.
+Slides and demo for the Letarette talk at Innovation Bay, May 2022.
 
 ## Running the presentation
 
 Run `npm install` and `npm run dev` to start the presentation on http://localhost:8080.
 Use left / right arrows to move between slides.
-Some slides have several pages. Use up / down arrows to swith page.
+Some slides have several pages. Use up / down arrows to switch page.
 
 ## Running the demo backend
 
