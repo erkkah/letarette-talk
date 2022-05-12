@@ -1,5 +1,5 @@
-### Full-text search according to Wikipedia
+## Letarette - a full-text search system
 
-> **full-text search** refers to techniques for searching a single computer-stored document or a collection in a full-text database.
+> Provides full-text search capabilities to a project with very little setup.
 
-> A **full-text database** ... is a database that contains the complete text of books, dissertations, journals, magazines, newspapers or other kinds of textual documents.
+> You can start out small with a single local index and, if needed, let it grow to a fully redundant distributed installation.

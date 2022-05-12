@@ -7,7 +7,9 @@ import { SearchHit } from "@letarette/client";
 import Markdown from "../../components/markdown";
 
 import style from "./style.css";
-import { Song } from "../../../demo/songdb";
+import { Song } from "../../../demo/songs/songdb";
+import { sciPrefix } from "./format";
+import pages from "../md/pages";
 
 interface SearchBoxProps {
     onSubmit(input: string): void;
@@ -24,7 +26,12 @@ const SearchBox: FC<SearchBoxProps> = (props) => {
 
     return (
         <form onSubmit={onSubmit}>
-            <input type="text" ref={textInput} size={50} style={{marginBottom: "1em"}}/>
+            <input
+                type="text"
+                ref={textInput}
+                size={50}
+                style={{ marginBottom: "1em", fontSize: "large"}}
+            />
         </form>
     );
 };
@@ -71,15 +78,16 @@ const SearchHitButton: FC<SearchHitButtonProps> = (props) => {
             <button style={buttonStyle} onClick={onClick}>
                 {title ?? title}
             </button>
-            {props.hit.Snippet !== title && (
-                <div style={snippetStyle}>{props.hit.Snippet}</div>
-            )}
+            <div style={snippetStyle}>{props.hit.Snippet}</div>
         </Column>
     );
 };
 
 interface SearchResultProps {
     result: SongResult;
+    page: number;
+    hasNext: boolean;
+    onNext: () => void;
 }
 
 enum SearchStatusCode {
@@ -111,7 +119,7 @@ function statusToText(status: SearchStatusCode): string {
 const TextBox: FC = (props) => {
     const boxStyle: h.JSX.CSSProperties = {
         overflow: "auto",
-        height: "60vh",
+        height: "50vh",
         padding: "4px",
         fontSize: "small",
     };
@@ -136,6 +144,7 @@ const TextBox: FC = (props) => {
 };
 
 const SearchStatus: FC<{
+    page: number;
     response: SearchResultProps["result"]["response"];
 }> = (props) => {
     const { response } = props;
@@ -151,12 +160,22 @@ const SearchStatus: FC<{
     return (
         <Column style={style}>
             {response.Result.Hits.length ? (
-                <Row>{response.Result.TotalHits} total hits.</Row>
+                <>
+                    <Row>Page {props.page}.</Row>
+                    <Row>
+                        {response.Result.TotalHits} total hits.
+                        {response.Result.Capped && " (Capped)"}
+                    </Row>
+                </>
             ) : (
                 ""
             )}
-            <Row>Search performed in {response.Duration.toPrecision(3)}s.</Row>
+            <Row>Search performed in {sciPrefix(response.Duration)}s.</Row>
             <Row>Status:{` ${statusToText(response.Status)}`}.</Row>
+            <Row>
+                {response.Result.Respelt &&
+                    `Did you mean "${response.Result.Respelt}" ?`}
+            </Row>
         </Column>
     );
 };
@@ -180,6 +199,12 @@ const SearchResult: FC<SearchResultProps> = (props) => {
         fontWeight: "bold",
     };
 
+    const moreStyle: h.JSX.CSSProperties = {
+        textAlign: "right",
+        margin: "4px",
+        border: "0.5px solid var(--c0)",
+    };
+
     return (
         <Row style={{ justifyContent: "space-between", flexGrow: 1 }}>
             <Column
@@ -195,8 +220,15 @@ const SearchResult: FC<SearchResultProps> = (props) => {
                     {response.Result.Hits.map((hit) => (
                         <SearchHitButton hit={hit} action={onAction} />
                     ))}
+                    <Row style={{ justifyContent: "end", paddingTop: "1em" }}>
+                        {props.hasNext && (
+                            <button style={moreStyle} onClick={props.onNext}>
+                                More
+                            </button>
+                        )}
+                    </Row>
                 </Column>
-                <SearchStatus response={response} />
+                <SearchStatus response={response} page={props.page} />
             </Column>
             <Column
                 style={{
@@ -231,7 +263,7 @@ const Search: FC<SearchProps> = (props) => {
         request: {
             query: "",
             pageOffset: 0,
-            pageLimit: 5,
+            pageLimit: 6,
         },
         status: "IDLE",
     });
@@ -252,6 +284,7 @@ const Search: FC<SearchProps> = (props) => {
             request: {
                 ...state.request,
                 query: text,
+                pageOffset: 0,
             },
         }));
     };
@@ -272,11 +305,58 @@ const Search: FC<SearchProps> = (props) => {
             .catch(() => setStatus("ERROR"));
     }, [state.request]);
 
+    const pageSize = response?.response.Result.Hits.length ?? 0;
+    const endPosition = response?.response.Result.TotalHits ?? 0;
+    const position =
+        state.request.pageOffset * state.request.pageLimit + pageSize;
+    const hasNext = position < endPosition;
+
+    const onNext = () => {
+        setState((prev) => ({
+            ...prev,
+            request: {
+                ...prev.request,
+                pageOffset: prev.request.pageOffset + 1,
+            },
+        }));
+    };
+
+    let statusIcon = "search";
+    switch (state.status) {
+        case "ERROR":
+            statusIcon = "error";
+            break;
+        case "SEARCHING":
+            statusIcon = "pending";
+            break;
+        case "IDLE":
+            statusIcon = "search";
+            break;
+    }
+    const status = (
+        <a tabIndex={-1} href="mdi:mid:24">
+            {statusIcon}
+        </a>
+    );
+
     return (
         <Column style={{ flexGrow: 1 }}>
-            <Markdown>### Steely Spam song search</Markdown>
-            <SearchBox onSubmit={onSubmit} />
-            {response && <SearchResult result={response} />}
+            <Markdown>{`
+### Steely Spam song search
+---
+            `}</Markdown>
+            <Row style={{justifyContent:"center"}}>
+                <SearchBox onSubmit={onSubmit} />
+                {status}
+            </Row>
+            {response && (
+                <SearchResult
+                    result={response}
+                    page={state.request.pageOffset + 1}
+                    hasNext={hasNext}
+                    onNext={onNext}
+                />
+            )}
         </Column>
     );
 };

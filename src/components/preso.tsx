@@ -1,4 +1,5 @@
-import { FunctionalComponent as FC, h } from "preact";
+import { FunctionalComponent as FC, Fragment, h } from "preact";
+import { useCallback, useEffect, useState } from "preact/hooks";
 
 const centeredRowStyle: h.JSX.CSSProperties = {
     height: "100%",
@@ -12,8 +13,8 @@ const centeredRowStyle: h.JSX.CSSProperties = {
     overflow: "hidden",
 };
 
-export const Centered: FC = (props) => (
-    <div style={centeredRowStyle}>{props.children}</div>
+export const Centered: FC<StyleProps> = (props) => (
+    <div style={{ ...centeredRowStyle, ...props.style }}>{props.children}</div>
 );
 
 const boxedStyle: h.JSX.CSSProperties = {
@@ -55,3 +56,39 @@ const columnStyle: h.JSX.CSSProperties = {
 export const Column: FC<StyleProps> = (props) => (
     <div style={{ ...columnStyle, ...props.style }}>{props.children}</div>
 );
+
+export const SpaceList: FC = (props) => {
+    const children = Array.isArray(props.children)
+        ? props.children
+        : [props.children ?? ""];
+
+    const [childIndex, setChildIndex] = useState(0);
+
+    const onKeyDown = useCallback((event: KeyboardEvent) => {
+        let diff = 0;
+
+        switch (event.key) {
+            case " ":
+            case "ArrowDown":
+                diff = 1;
+                break;
+            case "ArrowUp":
+                diff = -1;
+                break;
+        }
+
+        setChildIndex((prev) => {
+            let pos = prev + diff;
+            return Math.max(0, Math.min(pos, children.length - 1));
+        });
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("keydown", onKeyDown);
+        return () => {
+            document.removeEventListener("keydown", onKeyDown);
+        };
+    });
+
+    return <>{children[childIndex]}</>;
+};

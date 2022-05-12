@@ -1,11 +1,17 @@
-### Search engine features
+## [shopping_cart](mdi) Search engines
+---
 
-- Huge data sets with rapidly changing content
-- Great ranking, preferably with customizable weighting
-- Multi-script, multi-language stemming and spelling correction
-- Advanced query language with nestable logic expressions and of course regular expressions
-- Dynamic, configurable document structures, searchable on a field level
+There are several great search engines available, with impressive feature sets, including:
+
+- Great ranking, with customizable weights
+- Multi-language stemming and spelling correction
+- Advanced query languages with nestable logic expressions and regex
+- Dynamic document structures, searchable on a field level
 - Suggestions and auto-completion
 - Post-search clustering and filtering
-- A sprinkle of Machine Learning to make any of the above better adapted to a specific data set or user base
-- Client libraries for all programming languages on the top-30 list
+
+---
+
+** This is all great - and it's complex! **
+
+** Setting up a search engine and integrating it with your data is no small feat. [verified](mdi:mid:24) **

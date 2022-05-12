@@ -10,7 +10,7 @@ const MD: FC<{ page: string; boxed: boolean }> = (props) => {
     const markdowned = <Markdown>{page}</Markdown>;
 
     return (
-        <Centered>
+        <Centered style={{marginLeft: "4em", marginRight: "4em"}}>
             {props.boxed ? <Boxed>{markdowned}</Boxed> : markdowned}
         </Centered>
     );

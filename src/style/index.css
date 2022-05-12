@@ -1,5 +1,6 @@
 @import "sheetleeten.css";
 @import "coffee.css";
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons&display=swap");
 
 :root {
     --aspect: calc(3/2);
