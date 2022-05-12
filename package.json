@@ -21,7 +21,7 @@
     ]
   },
   "dependencies": {
-    "@letarette/client": "^0.1.5",
+    "@letarette/client": "^0.1.6",
     "@types/koa-router": "^7.4.4",
     "genius-lyrics": "^4.3.8",
     "highlight.js": "^11.5.0",
